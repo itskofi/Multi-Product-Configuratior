@@ -25,6 +25,7 @@ export default function App() {
           Home
         </Link>
         <Link to="/app/configurator">Multi-Product Configurator</Link>
+        <Link to="/app/enhanced-configurator">Enhanced Configurator</Link>
         <Link to="/app/additional">Additional page</Link>
       </NavMenu>
       <Outlet />
