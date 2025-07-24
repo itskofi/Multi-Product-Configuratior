@@ -3,7 +3,7 @@
 client_id = "e519c0282d1fe2622570f200e4be5fe5"
 name = "multi-product-config"
 handle = "multi-product-config"
-application_url = "https://purchased-appeals-moral-communist.trycloudflare.com"
+application_url = "https://intelligence-choices-stopped-recognized.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-07"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://purchased-appeals-moral-communist.trycloudflare.com/auth/callback", "https://purchased-appeals-moral-communist.trycloudflare.com/auth/shopify/callback", "https://purchased-appeals-moral-communist.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://intelligence-choices-stopped-recognized.trycloudflare.com/auth/callback", "https://intelligence-choices-stopped-recognized.trycloudflare.com/auth/shopify/callback", "https://intelligence-choices-stopped-recognized.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
