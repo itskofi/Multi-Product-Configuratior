@@ -15,7 +15,17 @@ import { DeleteIcon, DuplicateIcon, EditIcon } from '@shopify/polaris-icons';
 import type { ConfigurationSet as ConfigurationSetType, ConfiguredProduct } from '../types';
 import { ProductSlot } from './ProductSlot';
 
-interface ConfigurationSetProps {
+// Legacy props for backward compatibility
+interface LegacyConfigurationSetProps {
+  set: ConfigurationSetType;
+  onUpdateSet: (set: ConfigurationSetType) => void;
+  onAddProduct: () => void;
+  onRemoveProduct: (index: number) => void;
+  onUpdateProduct: (index: number, product: ConfiguredProduct) => void;
+}
+
+// New enhanced props interface
+interface EnhancedConfigurationSetProps {
   configurationSet: ConfigurationSetType;
   isActive?: boolean;
   onUpdate: (updatedSet: ConfigurationSetType) => void;
@@ -24,14 +34,38 @@ interface ConfigurationSetProps {
   onActivate: () => void;
 }
 
-export function ConfigurationSet({
-  configurationSet,
-  isActive = false,
-  onUpdate,
-  onDelete,
-  onDuplicate,
-  onActivate,
-}: ConfigurationSetProps) {
+type ConfigurationSetProps = LegacyConfigurationSetProps | EnhancedConfigurationSetProps;
+
+function isLegacyProps(props: ConfigurationSetProps): props is LegacyConfigurationSetProps {
+  return 'set' in props;
+}
+
+export function ConfigurationSet(props: ConfigurationSetProps) {
+  // Handle backward compatibility
+  let configurationSet: ConfigurationSetType;
+  let isActive: boolean;
+  let onUpdate: (updatedSet: ConfigurationSetType) => void;
+  let onDelete: () => void;
+  let onDuplicate: () => void;
+  let onActivate: () => void;
+
+  if (isLegacyProps(props)) {
+    // Legacy props structure
+    configurationSet = props.set;
+    isActive = false;
+    onUpdate = props.onUpdateSet;
+    onDelete = () => {}; // Legacy doesn't have delete
+    onDuplicate = () => {}; // Legacy doesn't have duplicate
+    onActivate = () => {}; // Legacy doesn't have activate
+  } else {
+    // New enhanced props structure
+    configurationSet = props.configurationSet;
+    isActive = props.isActive || false;
+    onUpdate = props.onUpdate;
+    onDelete = props.onDelete;
+    onDuplicate = props.onDuplicate;
+    onActivate = props.onActivate;
+  }
   const [isEditing, setIsEditing] = React.useState(false);
   const [editingName, setEditingName] = React.useState(configurationSet.name);
 
@@ -79,21 +113,21 @@ export function ConfigurationSet({
   };
 
   const handleRemoveProductSlot = (index: number) => {
-    const newProducts = configurationSet.products.filter((_, i) => i !== index);
+    const newProducts = configurationSet.products.filter((_: ConfiguredProduct, i: number) => i !== index);
     onUpdate({
       ...configurationSet,
       products: newProducts,
     });
   };
 
-  const getTotalPrice = () => {
-    return configurationSet.products.reduce((total, product) => {
-      return total + (product.price * product.quantity);
+    const calculateTotalPrice = (): number => {
+    return configurationSet.products.reduce((total: number, product: ConfiguredProduct) => {
+      return total + ((product.price || 0) * product.quantity);
     }, 0);
   };
 
   const getValidProductsCount = () => {
-    return configurationSet.products.filter(product => 
+    return configurationSet.products.filter((product: ConfiguredProduct) => 
       product.productId && product.variantId
     ).length;
   };
@@ -170,7 +204,7 @@ export function ConfigurationSet({
               Products: {getValidProductsCount()}/{configurationSet.products.length}
             </Text>
             <Text variant="bodyMd" as="span" tone="subdued">
-              Total: ${getTotalPrice().toFixed(2)}
+              Total: ${calculateTotalPrice().toFixed(2)}
             </Text>
             {configurationSet.discountCode && (
               <Badge tone="info">
@@ -186,10 +220,7 @@ export function ConfigurationSet({
                 key={`${configurationSet.id}-product-${index}`}
                 index={index}
                 configSetId={configurationSet.id}
-                initialProduct={product}
                 onChange={(updatedProduct: ConfiguredProduct) => handleProductUpdate(index, updatedProduct)}
-                onRemove={() => handleRemoveProductSlot(index)}
-                showRemoveButton={configurationSet.products.length > 1}
               />
             ))}
 

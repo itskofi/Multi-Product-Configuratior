@@ -4,9 +4,9 @@ export type ConfiguredProduct = {
   variantId: string;
   quantity: number;
   properties: { [key: string]: string };
-  productId: string;
-  title: string;
-  price: number;
+  productId?: string;
+  title?: string;
+  price?: number;
   image?: string;
 };
 
@@ -51,12 +51,8 @@ export type ProductVariant = {
 
 export type ProductSlotProps = {
   index: number;
-  onChange: (cfg: ConfiguredProduct) => void;
-  product?: Product;
-  configSetId: string;
-  initialProduct?: ConfiguredProduct;
-  onRemove?: () => void;
-  showRemoveButton?: boolean;
+  onChange: (configuredProduct: ConfiguredProduct) => void;
+  configSetId?: string;
 };
 
 export type ConfigurationSetProps = {

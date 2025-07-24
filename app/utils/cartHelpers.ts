@@ -39,9 +39,9 @@ export function configuredProductToCartLine(product: ConfiguredProduct): CartLin
     quantity: product.quantity,
     properties: {
       ...product.properties,
-      _productId: product.productId,
-      _title: product.title,
-      _price: product.price.toString(),
+      _productId: product.productId || '',
+      _title: product.title || '',
+      _price: (product.price || 0).toString(),
     },
   };
 }
@@ -168,7 +168,7 @@ export function calculateCartTotal(
 
   configSets.forEach(configSet => {
     const setSubtotal = configSet.products.reduce(
-      (sum, product) => sum + (product.price * product.quantity),
+      (sum, product) => sum + ((product.price || 0) * product.quantity),
       0
     );
     const setQuantity = configSet.products.reduce(

@@ -9,7 +9,7 @@ import {
 } from "@shopify/polaris";
 import type { ConfiguredProduct, ProductSlotProps } from "../types";
 
-export function ProductSlot({ index, onChange, product }: ProductSlotProps) {
+export function ProductSlot({ index, onChange, configSetId }: ProductSlotProps) {
   const [selectedVariant, setSelectedVariant] = useState<string>("");
   const [customText, setCustomText] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);

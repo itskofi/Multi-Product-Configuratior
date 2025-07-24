@@ -179,7 +179,7 @@ export function useConfigurationSets() {
 
   const getTotalPrice = useCallback(() => {
     return getAllProducts().reduce((total, product) => 
-      total + (product.price * product.quantity), 0
+      total + ((product.price || 0) * product.quantity), 0
     );
   }, [getAllProducts]);
 

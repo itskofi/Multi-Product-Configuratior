@@ -42,7 +42,7 @@ export function ProductPreview({
   }
 
   const totalQuantity = products.reduce((sum, product) => sum + product.quantity, 0);
-  const totalPrice = products.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+  const totalPrice = products.reduce((sum, product) => sum + ((product.price || 0) * product.quantity), 0);
 
   return (
     <Card>
@@ -98,7 +98,7 @@ interface ProductPreviewCardProps {
 }
 
 function ProductPreviewCard({ product, index, onRemove }: ProductPreviewCardProps) {
-  const subtotal = product.price * product.quantity;
+  const subtotal = (product.price || 0) * product.quantity;
 
   return (
     <Card>
@@ -162,7 +162,7 @@ function ProductPreviewCard({ product, index, onRemove }: ProductPreviewCardProp
                 Price:
               </Text>
               <Text variant="bodySm" as="p">
-                ${product.price.toFixed(2)}
+                ${(product.price || 0).toFixed(2)}
               </Text>
             </InlineStack>
 
