@@ -1,0 +1,291 @@
+{% comment %}
+  Valentine's Day Multi-Product Configurator
+  Allows customers to create romantic jewelry bundles directly on product pages
+{% endcomment %}
+
+<div class="valentine-configurator" id="valentine-configurator-{{ block.id }}">
+  <div class="valentine-configurator__header">
+    <h3 class="valentine-configurator__title">
+      💕 {{ block.settings.title | default: 'Create Your Valentine\'s Bundle' }}
+    </h3>
+    <p class="valentine-configurator__subtitle">
+      {{ block.settings.subtitle | default: 'Build the perfect romantic gift set with matching jewelry pieces' }}
+    </p>
+  </div>
+
+  <div class="valentine-configurator__content">
+    {% comment %} Valentine's Day Templates Section {% endcomment %}
+    {% if block.settings.show_templates %}
+      <div class="valentine-templates">
+        <h4 class="valentine-templates__title">🌹 Quick Templates</h4>
+        <div class="valentine-templates__grid">
+          <button class="template-card" data-template="his-hers">
+            <div class="template-card__icon">💍</div>
+            <div class="template-card__content">
+              <h5>His & Hers Set</h5>
+              <p>Matching couple jewelry</p>
+              <span class="template-card__price">from $299.98</span>
+            </div>
+          </button>
+          
+          <button class="template-card" data-template="engagement">
+            <div class="template-card__icon">💎</div>
+            <div class="template-card__content">
+              <h5>Engagement Dream</h5>
+              <p>Ring + romantic necklace</p>
+              <span class="template-card__price">from $2,799.99</span>
+            </div>
+          </button>
+          
+          <button class="template-card" data-template="surprise">
+            <div class="template-card__icon">🎁</div>
+            <div class="template-card__content">
+              <h5>Surprise Bundle</h5>
+              <p>Earrings + promise ring</p>
+              <span class="template-card__price">from $199.97</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    {% endif %}
+
+    {% comment %} Product Selection Grid {% endcomment %}
+    <div class="product-selection">
+      <h4 class="product-selection__title">✨ Build Your Bundle</h4>
+      <div class="product-selection__grid" id="product-grid-{{ block.id }}">
+        {% comment %} Dynamic product cards will be populated here {% endcomment %}
+        <div class="product-slot" data-slot="1">
+          <div class="product-slot__placeholder">
+            <div class="product-slot__icon">➕</div>
+            <p>Select First Product</p>
+          </div>
+        </div>
+        
+        <div class="product-slot" data-slot="2">
+          <div class="product-slot__placeholder">
+            <div class="product-slot__icon">➕</div>
+            <p>Select Second Product</p>
+          </div>
+        </div>
+      </div>
+      
+      <button class="add-product-slot" id="add-slot-{{ block.id }}">
+        ➕ Add Another Product (max 5)
+      </button>
+    </div>
+
+    {% comment %} Gift Options Section {% endcomment %}
+    {% if block.settings.show_gift_options %}
+      <div class="gift-options">
+        <h4 class="gift-options__title">🎁 Gift Options</h4>
+        
+        <div class="gift-wrapping">
+          <label class="gift-wrapping__toggle">
+            <input type="checkbox" id="gift-wrap-{{ block.id }}">
+            <span class="gift-wrapping__label">Add Gift Wrapping</span>
+          </label>
+          
+          <div class="gift-wrapping__options" id="wrap-options-{{ block.id }}" style="display: none;">
+            <div class="wrapping-style">
+              <input type="radio" name="wrapping-{{ block.id }}" value="classic-red" id="red-{{ block.id }}">
+              <label for="red-{{ block.id }}">Classic Red Ribbon (+$5.99)</label>
+            </div>
+            <div class="wrapping-style">
+              <input type="radio" name="wrapping-{{ block.id }}" value="elegant-gold" id="gold-{{ block.id }}">
+              <label for="gold-{{ block.id }}">Elegant Gold Bow (+$7.99)</label>
+            </div>
+            <div class="wrapping-style">
+              <input type="radio" name="wrapping-{{ block.id }}" value="romantic-pink" id="pink-{{ block.id }}">
+              <label for="pink-{{ block.id }}">Romantic Pink Hearts (+$6.99)</label>
+            </div>
+            <div class="wrapping-style">
+              <input type="radio" name="wrapping-{{ block.id }}" value="premium-velvet" id="velvet-{{ block.id }}">
+              <label for="velvet-{{ block.id }}">Premium Velvet Box (+$12.99)</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="gift-message">
+          <label for="gift-message-{{ block.id }}">💌 Personal Message</label>
+          <textarea 
+            id="gift-message-{{ block.id }}" 
+            placeholder="Write your romantic message here..."
+            maxlength="200"
+          ></textarea>
+          <small>Maximum 200 characters</small>
+        </div>
+      </div>
+    {% endif %}
+
+    {% comment %} Discount Code Section {% endcomment %}
+    {% if block.settings.show_discount_codes %}
+      <div class="discount-section">
+        <h4 class="discount-section__title">💰 Valentine's Discount Codes</h4>
+        
+        <div class="suggested-codes">
+          <button class="discount-code" data-code="VALENTINE20">VALENTINE20 (20% off)</button>
+          <button class="discount-code" data-code="LOVEBIRDS15">LOVEBIRDS15 (15% off couples)</button>
+          <button class="discount-code" data-code="CUPID50">CUPID50 ($50 off $200+)</button>
+        </div>
+        
+        <div class="discount-input">
+          <input type="text" id="discount-code-{{ block.id }}" placeholder="Enter discount code">
+          <button type="button" id="apply-discount-{{ block.id }}">Apply</button>
+        </div>
+        
+        <div class="discount-result" id="discount-result-{{ block.id }}"></div>
+      </div>
+    {% endif %}
+
+    {% comment %} Bundle Summary {% endcomment %}
+    <div class="bundle-summary">
+      <h4 class="bundle-summary__title">📋 Bundle Summary</h4>
+      <div class="bundle-summary__content" id="summary-{{ block.id }}">
+        <p class="bundle-summary__empty">Add products to see your bundle summary</p>
+      </div>
+      
+      <div class="bundle-summary__pricing" id="pricing-{{ block.id }}">
+        <div class="pricing-line">
+          <span>Subtotal:</span>
+          <span class="subtotal">$0.00</span>
+        </div>
+        <div class="pricing-line discount-line" style="display: none;">
+          <span>Discount:</span>
+          <span class="discount">-$0.00</span>
+        </div>
+        <div class="pricing-line gift-wrap-line" style="display: none;">
+          <span>Gift Wrapping:</span>
+          <span class="gift-wrap-cost">+$0.00</span>
+        </div>
+        <div class="pricing-line total-line">
+          <span><strong>Total:</strong></span>
+          <span class="total"><strong>$0.00</strong></span>
+        </div>
+      </div>
+      
+      <button class="add-bundle-to-cart" id="add-bundle-{{ block.id }}" disabled>
+        💕 Add Bundle to Cart
+      </button>
+    </div>
+  </div>
+</div>
+
+{% comment %} Load the configurator JavaScript and CSS {% endcomment %}
+{{ 'valentine-configurator.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'valentine-configurator.js' | asset_url }}" defer></script>
+
+<script>
+  // Initialize the Valentine's Day configurator when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    const configuratorId = 'valentine-configurator-{{ block.id }}';
+    const configurator = document.getElementById(configuratorId);
+    
+    if (configurator && typeof ValentineConfigurator !== 'undefined') {
+      new ValentineConfigurator(configurator, {
+        blockId: '{{ block.id }}',
+        showTemplates: {{ block.settings.show_templates | json }},
+        showGiftOptions: {{ block.settings.show_gift_options | json }},
+        showDiscountCodes: {{ block.settings.show_discount_codes | json }},
+        maxProducts: {{ block.settings.max_products | default: 5 }},
+        valentineTheme: {{ block.settings.valentine_theme | json }},
+        appUrl: '{{ shop.url }}/apps/multi-product-config'
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Valentine's Day Configurator",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Block Title",
+      "default": "Create Your Valentine's Bundle"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Block Subtitle",
+      "default": "Build the perfect romantic gift set with matching jewelry pieces"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_templates",
+      "label": "Show Valentine's Templates",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gift_options",
+      "label": "Show Gift Wrapping Options",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_codes",
+      "label": "Show Discount Code Section",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Maximum Products in Bundle",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "select",
+      "id": "valentine_theme",
+      "label": "Valentine's Theme Style",
+      "options": [
+        {
+          "value": "romantic",
+          "label": "Romantic (Pink & Red)"
+        },
+        {
+          "value": "elegant",
+          "label": "Elegant (Gold & Rose)"
+        },
+        {
+          "value": "modern",
+          "label": "Modern (Black & Gold)"
+        }
+      ],
+      "default": "romantic"
+    },
+    {
+      "type": "header",
+      "content": "Advanced Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_analytics",
+      "label": "Enable Bundle Analytics",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "custom_css_class",
+      "label": "Custom CSS Class",
+      "info": "Add custom CSS class for styling"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Valentine's Day Configurator",
+      "settings": {
+        "title": "Create Your Valentine's Bundle",
+        "show_templates": true,
+        "show_gift_options": true,
+        "show_discount_codes": true,
+        "valentine_theme": "romantic"
+      }
+    }
+  ]
+}
+{% endschema %}

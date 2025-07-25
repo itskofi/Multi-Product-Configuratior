@@ -1,0 +1,12 @@
+name = "valentine-cart-extension"
+type = "ui_extension"
+
+[[extensions.targeting]]
+target = "purchase.cart.line-item.render-after"
+
+[capabilities]
+api_access = true
+network_access = true
+
+[dependencies]
+react = "18.0.0"
